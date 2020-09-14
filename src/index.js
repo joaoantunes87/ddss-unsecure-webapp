@@ -1,6 +1,5 @@
 /* External dependencies */
 const http = require("http");
-const cookie = require("cookie");
 const { resolve } = require("path");
 const { parse } = require("url");
 const querystring = require("querystring");
@@ -11,6 +10,9 @@ const Db = require("./utils/db");
 /* View helpers */
 const View = require("./utils/view");
 
+/* Cookie helpers */
+const Cookie = require("./utils/cookie");
+
 const requestListener = function (req, res) {
   let path = parse(req.url).pathname;
   console.log("URL and PARAMS: ", {
@@ -18,7 +20,7 @@ const requestListener = function (req, res) {
     path,
     params: req.params,
     method: req.method,
-    cookies: cookie.parse(req.headers.cookie),
+    cookies: Cookie.parse(req.headers.cookie),
   });
 
   /* Handle routes */
@@ -127,7 +129,7 @@ function handleUserPageRoute(req, res) {
 
 function handleMovementCreationRoute(req, res) {
   const urlParsed = parse(req.url);
-  const userId = cookie.parse(req.headers.cookie).ddss_session;
+  const userId = Cookie.parse(req.headers.cookie).ddss_session;
   const movementData = querystring.parse(urlParsed.query);
   movementData.from_account_id = parseInt(userId);
 

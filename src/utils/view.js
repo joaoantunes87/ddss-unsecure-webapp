@@ -7,8 +7,46 @@ function generateHtmlFromTemplateWithContent(content) {
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <title>DDSS Unsecure Web App</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+          <style>
+            html,
+            body {
+              height: 100%;
+            }
+
+            html {
+              box-sizing: border-box;
+            }
+            *, *:before, *:after {
+              box-sizing: inherit;
+            }
+            
+            body {
+              padding-top: 40px;
+              padding-bottom: 40px;
+              background-color: #f5f5f5;
+            }
+
+            form .form-control {
+              position: relative;
+              height: auto;
+              padding: 10px;
+              font-size: 16px;
+              margin-bottom: 16px;
+            }
+
+            .form-signin, .form-signup {
+              width: 100%;
+              max-width: 460px;
+              padding: 15px;
+              margin: auto;
+            }
+          </style>
+
         </head>
-        <body>        
+        <body class="text-center">        
           <main class="wrapper" style="max-width: 980px; margin: 0 auto; text-align:center">
             ${content}
           </main>
@@ -19,36 +57,39 @@ function generateHtmlFromTemplateWithContent(content) {
 
 function loginFormPage() {
   return generateHtmlFromTemplateWithContent(`
-      <form action="/sessions" method="POST" style="display:flex;flex-direction:column;align-content:center;">
-        <label for="email">
-          Email:
-          <input id="email" name="email" placeholder="Email" />
-        </label>
-        <label for="password">
-          Password:
-          <input id="password" name="password" placeholder="Password" />
-        </label>
-        <button type="submit">Login</button>      
+      <form class="form-signin" action="/sessions" method="POST">
+        <img class="mb-4" src="https://picsum.photos/96/96" alt="" width="96" height="96">
+        <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+
+        <label for="email" class="sr-only">Email</label>
+        <input id="email" type="email" class="form-control" placeholder="Your email" required>
+
+        <label for="password" class="sr-only">Password</label>
+        <input id="password" class="form-control" placeholder="Create a password" required>      
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>            
+        <a class="btn btn-lg btn-secondary btn-block" href="/sign_up">Register</a>            
       </form>
     `);
 }
 
 function signUpFormPage() {
   return generateHtmlFromTemplateWithContent(`
-    <form action="/users" method="POST" style="display:flex;flex-direction:column;align-content:center;">
-      <label for="name">
-        Name:
-        <input id="name" name="name" placeholder="Your name" />
-      </label>
-      <label for="email">
-        Email:
-        <input id="email" name="email" placeholder="Email" />
-      </label>
-      <label for="password">
-        Password:
-        <input id="password" name="password" placeholder="Password" />
-      </label>
-      <button type="submit">Register</button>      
+    <form class="form-signup" action="/users" method="POST">
+      <img class="mb-4" src="https://picsum.photos/96/96" alt="" width="96" height="96">
+      <h1 class="h3 mb-3 font-weight-normal">Please register your account</h1>
+
+      <label for="name" class="sr-only">Name</label>
+      <input id="name" class="form-control" placeholder="Your name" required autofocus>
+      
+      <label for="email" class="sr-only">Email</label>
+      <input id="email" type="email" class="form-control" placeholder="Your email" required>
+
+      <label for="password" class="sr-only">Password</label>
+      <input id="password" class="form-control" placeholder="Create a password" required>      
+
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>   
+      <a class="btn btn-lg btn-secondary btn-block" href="/login">Login</a>               
     </form>
   `);
 }
@@ -59,10 +100,10 @@ function userPage({ user, queryParams }) {
     ${
       queryParams.search
         ? `<h2>Movements found for ${queryParams.search}</h2>
-       <ul>
+       <ul class="list-group">
         ${user.movements
           .map(function movementHtml(m) {
-            return `<li>To: ${m.to}, From: ${m.from}, Amount: ${m.amount}</li>`;
+            return `<li class="list-group-item">${m.description} - ${m.amount}€</li>`;
           })
           .join("")}
        </ul>

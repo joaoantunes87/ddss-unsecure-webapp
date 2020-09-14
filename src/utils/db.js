@@ -83,7 +83,7 @@ function userMovements({ user, queryParams, onSuccess, onError }) {
 
   const sqlQuery = `SELECT description, amount, to_account_id, from_account_id 
     from movement 
-    WHERE description="${queryParams.search}" AND (to_account_id=${user.id} OR from_account_id="${user.id}")`;
+    WHERE description LIKE "%${queryParams.search}%" AND (to_account_id=${user.id} OR from_account_id="${user.id}")`;
 
   console.log("sqlQuery: ", sqlQuery);
 
