@@ -28,6 +28,8 @@ const requestListener = function (req, res) {
     handleSignUpRoute(req, res);
   } else if (path === "/login" && req.method === "GET") {
     handleLoginRoute(req, res);
+  } else if (path === "/logout" && req.method === "POST") {
+    handleLogoutRoute(req, res);
   } else if (path.startsWith("/movements") && req.method === "GET") {
     handleMovementCreationRoute(req, res);
   } else if (path.startsWith("/users") && req.method === "POST") {
@@ -60,6 +62,24 @@ function handleLoginRoute(req, res) {
   res.writeHead(200, { "Content-Type": "text/html" });
   res.write(View.loginFormPage());
   res.end();
+}
+
+function handleLogoutRoute(req, res) {
+  const sessionId = Cookie.parse(req.headers.cookie).ddss_session;
+
+  Db.deleteSessionById({
+    sessionId,
+    onSuccess: function onSuccess() {
+      res.writeHead(302, {
+        Location: "/login",
+        "Set-Cookie": "ddss_session=; expires=Thu, 01 Jan 1970 00:00:00 GMT",
+      });
+      res.end();
+    },
+    onError: function onError(errorMessage) {
+      handleErrorPageRoute(errorMessage, res);
+    },
+  });
 }
 
 function handleAccountCreationRoute(req, res) {
@@ -100,28 +120,39 @@ function handleUserPageRoute(req, res) {
   const userId = urlParsed.pathname.split("/")[2];
   const queryParams = querystring.parse(urlParsed.query);
 
+  // TODO Is it safe to use the userId from url?
   if (userId) {
-    const user = { id: userId };
-    if (queryParams && queryParams.search) {
-      Db.userMovements({
-        user,
-        queryParams,
-        onSuccess: function (userMovements) {
-          user.movements = userMovements;
-          console.log("User: ", user);
+    Db.fetchUserById({
+      userId,
+      onSuccess: function (userFromDatabase) {
+        const userForView = { id: userId };
+        userForView.name = userFromDatabase.name;
+
+        if (queryParams && queryParams.search) {
+          Db.userMovements({
+            user: { id: userId },
+            queryParams,
+            onSuccess: function (userMovements) {
+              userForView.movements = userMovements;
+
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.write(View.userPage({ user: userForView, queryParams }));
+              res.end();
+            },
+            onError: function (errorMessage) {
+              handleErrorPageRoute(errorMessage, res);
+            },
+          });
+        } else {
           res.writeHead(200, { "Content-Type": "text/html" });
-          res.write(View.userPage({ user, queryParams }));
+          res.write(View.userPage({ user: userForView, queryParams }));
           res.end();
-        },
-        onError: function (errorMessage) {
-          handleErrorPageRoute(errorMessage, res);
-        },
-      });
-    } else {
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.write(View.userPage({ user, queryParams }));
-      res.end();
-    }
+        }
+      },
+      onError: function (errorMessage) {
+        handleErrorPageRoute(errorMessage, res);
+      },
+    });
   } else {
     handleErrorPageRoute("No user defined", res);
   }
@@ -129,17 +160,28 @@ function handleUserPageRoute(req, res) {
 
 function handleMovementCreationRoute(req, res) {
   const urlParsed = parse(req.url);
-  const userId = Cookie.parse(req.headers.cookie).ddss_session;
+  const sessionId = Cookie.parse(req.headers.cookie).ddss_session;
   const movementData = querystring.parse(urlParsed.query);
-  movementData.from_account_id = parseInt(userId);
 
-  Db.createMovement({
-    movement: movementData,
-    onSuccess: function onSuccess(result) {
-      res.writeHead(302, {
-        Location: `users/${userId}?successMessage=Movement with code ${result.id} was done with sucess`,
+  Db.fetchUserBySessionId({
+    sessionId,
+    onSuccess: function onSuccess(user) {
+      // TODO: Should I allow the movement if I have no user?
+      const userId = user.account_id;
+      movementData.from_account_id = userId;
+
+      Db.createMovement({
+        movement: movementData,
+        onSuccess: function onSuccess(result) {
+          res.writeHead(302, {
+            Location: `users/${userId}?successMessage=Movement with code ${result.id} was done with sucess`,
+          });
+          res.end();
+        },
+        onError: function onError(errorMessage) {
+          handleErrorPageRoute(errorMessage, res);
+        },
       });
-      res.end();
     },
     onError: function onError(errorMessage) {
       handleErrorPageRoute(errorMessage, res);
@@ -149,13 +191,28 @@ function handleMovementCreationRoute(req, res) {
 
 function handleForumPageRoute(req, res) {
   const urlParsed = parse(req.url);
+  const sessionId = Cookie.parse(req.headers.cookie).ddss_session;
   const queryParams = querystring.parse(urlParsed.query);
 
   Db.allPublicComments({
     onSuccess: function (comments) {
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.write(View.forumPage({ comments, queryParams }));
-      res.end();
+      Db.fetchUserBySessionId({
+        sessionId,
+        onSuccess: function onSuccess(user) {
+          res.writeHead(200, { "Content-Type": "text/html" });
+          res.write(
+            View.forumPage({
+              comments,
+              queryParams,
+              user,
+            })
+          );
+          res.end();
+        },
+        onError: function onError(errorMessage) {
+          handleErrorPageRoute(errorMessage, res);
+        },
+      });
     },
     onError: function (errorMessage) {
       handleErrorPageRoute(errorMessage, res);
@@ -181,9 +238,18 @@ function handleCommentCreationRoute(req, res) {
 }
 
 function handleHomeRoute(req, res) {
-  res.writeHead(200, { "Content-Type": "text/html" });
-  res.write(View.homePage());
-  res.end();
+  const sessionId = Cookie.parse(req.headers.cookie).ddss_session;
+  Db.fetchUserBySessionId({
+    sessionId,
+    onSuccess: function onSuccess(user) {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.write(View.homePage(user));
+      res.end();
+    },
+    onError: function onError(errorMessage) {
+      handleErrorPageRoute(errorMessage, res);
+    },
+  });
 }
 
 function handleErrorPageRoute(errorMessage, res) {

@@ -40,6 +40,60 @@ function createUser({ user, onSuccess, onError }) {
   db.close();
 }
 
+function fetchUserBySessionId({ sessionId, onSuccess, onError }) {
+  const db = openDbConnection();
+
+  const sqlQuery = `SELECT user.account_id, user.name from user, user_session where user.account_id = user_session.account_id AND user_session.session_id = "${sessionId}"`;
+  console.log("sqlQuery: ", sqlQuery);
+  db.all(sqlQuery, function (err, rows) {
+    if (err) {
+      onError(err.message);
+      return;
+    }
+
+    onSuccess(rows.length > 0 ? rows[0] : undefined);
+  });
+
+  // close the database connection
+  db.close();
+}
+
+function fetchUserById({ userId, onSuccess, onError }) {
+  const db = openDbConnection();
+  const sqlQuery = `SELECT account_id, name from user where account_id =  "${userId}"`;
+
+  db.all(sqlQuery, function (err, rows) {
+    if (err) {
+      onError(err.message);
+      return;
+    }
+
+    onSuccess(rows.length > 0 ? rows[0] : undefined);
+  });
+
+  // close the database connection
+  db.close();
+}
+
+function deleteSessionById({ sessionId, onSuccess, onError }) {
+  const db = openDbConnection();
+
+  // insert one row into the user table
+  db.run(
+    `DELETE FROM user_session where user_session.session_id = "${sessionId}"`,
+    function (err) {
+      if (err) {
+        onError(err.message);
+      }
+
+      onSuccess();
+    }
+  );
+
+  // close the database connection
+  db.close();
+}
+
 function loginUser({ userAuth, onSuccess, onError }) {
   const db = openDbConnection();
 
@@ -184,6 +238,9 @@ function createComment({ comment, onSuccess, onError }) {
 }
 
 exports.createUser = createUser;
+exports.fetchUserBySessionId = fetchUserBySessionId;
+exports.fetchUserById = fetchUserById;
+exports.deleteSessionById = deleteSessionById;
 exports.loginUser = loginUser;
 exports.userMovements = userMovements;
 exports.createMovement = createMovement;

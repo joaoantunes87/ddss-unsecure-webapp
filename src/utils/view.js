@@ -1,4 +1,23 @@
-function generateHtmlFromTemplateWithContent(content) {
+function generateHtmlFromTemplateWithContent(content, user) {
+  function renderNavbarForUser() {
+    return user
+      ? `<nav class="navbar navbar-dark bg-dark fixed-top">
+          <a class="navbar-brand" href="/">
+            <img src="https://picsum.photos/30/30" width="30" height="30" class="d-inline-block align-top" alt="random image" loading="lazy">
+            ${user.name || "DDSS"}
+          </a>
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="/forum">Forum</a>
+            </li>
+          </ul>
+          <form class="form-inline" action="/logout" method="POST">
+            <button class="btn btn-light my-2 my-sm-0">Logout</button>
+          </form>    
+      </nav>`
+      : "";
+  }
+
   return `
       <!DOCTYPE html>
       <html>
@@ -24,9 +43,8 @@ function generateHtmlFromTemplateWithContent(content) {
             }
             
             body {
-              padding-top: 40px;
-              padding-bottom: 40px;
               background-color: #f5f5f5;
+              padding-top: 80px;
             }
 
             form .form-control {
@@ -47,6 +65,7 @@ function generateHtmlFromTemplateWithContent(content) {
 
         </head>
         <body class="text-center">        
+          ${renderNavbarForUser()}
           <main class="wrapper" style="max-width: 980px; margin: 0 auto; text-align:center">
             ${content}
           </main>
@@ -62,10 +81,10 @@ function loginFormPage() {
         <h1 class="h3 mb-3 font-weight-normal">Login</h1>
 
         <label for="email" class="sr-only">Email</label>
-        <input id="email" type="email" class="form-control" placeholder="Your email" required>
+        <input id="email" name="email" type="email" class="form-control" placeholder="Your email" required>
 
         <label for="password" class="sr-only">Password</label>
-        <input id="password" class="form-control" placeholder="Create a password" required>      
+        <input id="password" name="password" class="form-control" placeholder="Create a password" required>      
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>            
         <a class="btn btn-lg btn-secondary btn-block" href="/sign_up">Register</a>            
@@ -80,13 +99,13 @@ function signUpFormPage() {
       <h1 class="h3 mb-3 font-weight-normal">Please register your account</h1>
 
       <label for="name" class="sr-only">Name</label>
-      <input id="name" class="form-control" placeholder="Your name" required autofocus>
+      <input id="name" name="name" class="form-control" placeholder="Your name" required autofocus>
       
       <label for="email" class="sr-only">Email</label>
-      <input id="email" type="email" class="form-control" placeholder="Your email" required>
+      <input id="email" name="email" type="email" class="form-control" placeholder="Your email" required>
 
       <label for="password" class="sr-only">Password</label>
-      <input id="password" class="form-control" placeholder="Create a password" required>      
+      <input id="password" name="password" class="form-control" placeholder="Create a password" required>      
 
       <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>   
       <a class="btn btn-lg btn-secondary btn-block" href="/login">Login</a>               
@@ -95,7 +114,8 @@ function signUpFormPage() {
 }
 
 function userPage({ user, queryParams }) {
-  return generateHtmlFromTemplateWithContent(`
+  return generateHtmlFromTemplateWithContent(
+    `
     <h1>Movements</h1>    
     ${
       queryParams.search
@@ -142,13 +162,14 @@ function userPage({ user, queryParams }) {
       </label>           
       <button type="submit">Transfer</button>      
     </form>  
-    
-    <a href="/forum">Go to forum</a>
-  `);
+  `,
+    user
+  );
 }
 
-function forumPage({ comments = [], queryParams }) {
-  return generateHtmlFromTemplateWithContent(`
+function forumPage({ comments = [], queryParams, user }) {
+  return generateHtmlFromTemplateWithContent(
+    `
     <h1>Comments</h1>    
     ${
       queryParams && queryParams.successMessage
@@ -183,12 +204,15 @@ function forumPage({ comments = [], queryParams }) {
         })
         .join("")}
     </ul>       
-  `);
+  `,
+    user
+  );
 }
 
-function homePage() {
+function homePage(user) {
   return generateHtmlFromTemplateWithContent(
-    `<h1>Hello</h1><a href="/login">Go to login page</a>`
+    `<h1>Hello</h1><a href="/login">Go to login page</a>`,
+    user
   );
 }
 
@@ -198,9 +222,10 @@ function errorPage({ errorMessage }) {
   );
 }
 
-function notFoundPage() {
+function notFoundPage(user) {
   return generateHtmlFromTemplateWithContent(
-    '<h1>Not Found</h1><a href="/">Go home</a>'
+    '<h1>Not Found</h1><a href="/">Go home</a>',
+    user
   );
 }
 
