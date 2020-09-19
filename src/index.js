@@ -242,8 +242,7 @@ function handleHomeRoute(req, res) {
   Db.fetchUserBySessionId({
     sessionId,
     onSuccess: function onSuccess(user) {
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.write(View.homePage(user));
+      res.writeHead(302, { Location: user ? `/users/${user.id}` : "/login" });
       res.end();
     },
     onError: function onError(errorMessage) {

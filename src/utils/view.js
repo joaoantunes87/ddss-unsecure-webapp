@@ -209,13 +209,6 @@ function forumPage({ comments = [], queryParams, user }) {
   );
 }
 
-function homePage(user) {
-  return generateHtmlFromTemplateWithContent(
-    `<h1>Hello</h1><a href="/login">Go to login page</a>`,
-    user
-  );
-}
-
 function errorPage({ errorMessage }) {
   return generateHtmlFromTemplateWithContent(
     `<h1>Error</h1><h2>${errorMessage}</h2>`
@@ -233,6 +226,5 @@ exports.loginFormPage = loginFormPage;
 exports.signUpFormPage = signUpFormPage;
 exports.errorPage = errorPage;
 exports.notFoundPage = notFoundPage;
-exports.homePage = homePage;
 exports.userPage = userPage;
 exports.forumPage = forumPage;
