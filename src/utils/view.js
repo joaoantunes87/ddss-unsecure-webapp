@@ -44,7 +44,7 @@ function generateHtmlFromTemplateWithContent(content, user) {
             
             body {
               background-color: #f5f5f5;
-              padding-top: 80px;
+              padding-top: 120px;
             }
 
             form .form-control {
@@ -55,7 +55,7 @@ function generateHtmlFromTemplateWithContent(content, user) {
               margin-bottom: 16px;
             }
 
-            .form-signin, .form-signup {
+            form.main {
               width: 100%;
               max-width: 460px;
               padding: 15px;
@@ -76,9 +76,9 @@ function generateHtmlFromTemplateWithContent(content, user) {
 
 function loginFormPage() {
   return generateHtmlFromTemplateWithContent(`
-      <form class="form-signin" action="/sessions" method="POST">
+      <form class="main" action="/sessions" method="POST">
         <img class="mb-4" src="https://picsum.photos/96/96" alt="" width="96" height="96">
-        <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+        <h1 class="h3 mb-4 font-weight-normal">Login</h1>
 
         <label for="email" class="sr-only">Email</label>
         <input id="email" name="email" type="email" class="form-control" placeholder="Your email" required>
@@ -94,9 +94,9 @@ function loginFormPage() {
 
 function signUpFormPage() {
   return generateHtmlFromTemplateWithContent(`
-    <form class="form-signup" action="/users" method="POST">
+    <form class="main" action="/users" method="POST">
       <img class="mb-4" src="https://picsum.photos/96/96" alt="" width="96" height="96">
-      <h1 class="h3 mb-3 font-weight-normal">Please register your account</h1>
+      <h1 class="h3 mb-4 font-weight-normal">Register your acccount</h1>
 
       <label for="name" class="sr-only">Name</label>
       <input id="name" name="name" class="form-control" placeholder="Your name" required autofocus>
@@ -116,11 +116,28 @@ function signUpFormPage() {
 function userPage({ user, queryParams }) {
   return generateHtmlFromTemplateWithContent(
     `
-    <h1>Movements</h1>    
+    ${
+      queryParams && queryParams.successMessage
+        ? `<div class="alert alert-success" role="alert">${queryParams.successMessage}</div>`
+        : ""
+    }
+
+    <h1 class="h3 mb-4 font-weight-normal">Movements</h1>
+
+    <form class="mb-4" action="/users/${user.id}" method="GET">
+      <div class="form-row align-items-center justify-content-center">
+        <div class="col-auto">
+          <label for="search" class="sr-only">Search by</label>
+          <input class="form-control mb-2" id="search" name="search" placeholder="Search by description">
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-2">Search</button>  
+      </div>         
+    </form>
+
     ${
       queryParams.search
-        ? `<h2>Movements found for ${queryParams.search}</h2>
-       <ul class="list-group">
+        ? `<ul class="list-group mt-4 mb-4">
         ${user.movements
           .map(function movementHtml(m) {
             return `<li class="list-group-item">${m.description} - ${m.amount}€</li>`;
@@ -130,37 +147,20 @@ function userPage({ user, queryParams }) {
       `
         : ""
     }
-    ${
-      queryParams && queryParams.successMessage
-        ? `<h2>${queryParams.successMessage}</h2>`
-        : ""
-    }
-    <form action="/users/${
-      user.id
-    }" method="GET" style="display:flex;flex-direction:column;align-content:center;">
-      <h3>Search for your movements by description</h3>
-      <label for="search">
-        Search For:
-        <input id="search" name="search" placeholder="Movement description" />
-      </label>
-      <button type="submit">Search</button>      
-    </form>
 
-    <h2>Transfer Money</h2>
-    <form action="/movements" method="GET" style="display:flex;flex-direction:column;align-content:center;">
-      <label for="to">
-        Transfer to:
-        <input id="to_account_id" name="to_account_id" placeholder="User id to receive amount" />
-      </label>
-      <label for="amount">
-        Transfer amount:
-        <input id="amount" type="number" name="amount" placeholder="Amount to transfer" />
-      </label>    
-      <label for="description">
-        Movement description:
-        <input id="description" name="description" placeholder="Description of movement" />
-      </label>           
-      <button type="submit">Transfer</button>      
+    <h2 class="h3 mb-4 font-weight-normal">Transfer Money</h2>
+
+    <form class="main" action="/movements" method="GET">
+      <label for="to_account_id" class="sr-only">Transfer to</label>
+      <input id="to_account_id" name="to_account_id" class="form-control" placeholder="User id to receive amount" required>
+
+      <label for="amount" class="sr-only">Amount</label>
+      <input id="amount" name="amount" type="number" class="form-control" placeholder="Amount" required>
+
+      <label for="description" class="sr-only">Description</label>
+      <input id="description" name="description" class="form-control" placeholder="Description of movement" required>
+          
+      <button type="submit" class="btn btn-primary btn-block">Transfer</button>  
     </form>  
   `,
     user
@@ -170,37 +170,31 @@ function userPage({ user, queryParams }) {
 function forumPage({ comments = [], queryParams, user }) {
   return generateHtmlFromTemplateWithContent(
     `
-    <h1>Comments</h1>    
+    <h1 class="h3 mb-4 font-weight-normal">Add your comment</h1>    
     ${
       queryParams && queryParams.successMessage
-        ? `<h2>${queryParams.successMessage}</h2>`
+        ? `<div class="alert alert-success" role="alert">${queryParams.successMessage}</div>`
         : ""
     }
-    <form action="/comments" method="POST" style="display:flex;flex-direction:column;align-content:center;">
-      <h3>Add your comment</h3>
-      <label for="email">
-        Email:
-        <input id="email" name="email" placeholder="Your email" />
-      </label>
-      <label for="name">
-        Name:
-        <input id="name" name="name" placeholder="Your name" />
-      </label>
-      <label for="email">
-        Comment:
-        <input id="comment" name="comment" placeholder="Your comment" />
-      </label>      
-      <button type="submit">Comment</button>      
+    <form class="main" action="/comments" method="POST">
+      <label for="email" class="sr-only">Email</label>
+      <input id="email" name="email" type="email" class="form-control" placeholder="Your email">
+
+      <label for="name" class="sr-only">Name</label>
+      <input id="name" name="name" class="form-control" placeholder="Your name" required>
+
+      <label for="comment" class="sr-only">Your comment</label>
+      <input id="comment" name="comment" class="form-control" placeholder="Your comment" required>
+  
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Comment</button>            
     </form>
 
-    <h2>Last comments</h2>
-    <ul>
+    <h2 class="h3 mb-4 font-weight-normal">Last comments</h2>
+
+    <ul class="list-group">
       ${comments
         .map(function commentHtml(c) {
-          return `<li>
-              <p>${c.name}<${c.email}></p>
-              <p>${c.comment}</p>
-            </li>`;
+          return `<li class="list-group-item">${c.name}<${c.email}>: ${c.comment}</li>`;
         })
         .join("")}
     </ul>       

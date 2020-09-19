@@ -174,7 +174,7 @@ function handleMovementCreationRoute(req, res) {
         movement: movementData,
         onSuccess: function onSuccess(result) {
           res.writeHead(302, {
-            Location: `users/${userId}?successMessage=Movement with code ${result.id} was done with sucess`,
+            Location: `users/${userId}?successMessage=Movement with code ${result.id} was successful`,
           });
           res.end();
         },
@@ -226,7 +226,7 @@ function handleCommentCreationRoute(req, res) {
       comment: commentData,
       onSuccess: function onSuccess(result) {
         res.writeHead(302, {
-          Location: `forum?successMessage=Comment with id ${result.id} was added`,
+          Location: `/forum?successMessage=Your comment was added`,
         });
         res.end();
       },
