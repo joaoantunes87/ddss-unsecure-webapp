@@ -242,7 +242,10 @@ function handleHomeRoute(req, res) {
   Db.fetchUserBySessionId({
     sessionId,
     onSuccess: function onSuccess(user) {
-      res.writeHead(302, { Location: user ? `/users/${user.id}` : "/login" });
+      console.log("Logged in user: ", user);
+      res.writeHead(302, {
+        Location: user ? `/users/${user.account_id}` : "/login",
+      });
       res.end();
     },
     onError: function onError(errorMessage) {
