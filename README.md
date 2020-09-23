@@ -107,3 +107,8 @@ Discover flaws and try to solve them. Some of the flaws we are looking for are o
 - Cross Site Scripting (XSS);
 - Cross-site request forgery (CSRF);
 - Among others;
+
+# Authors
+
+- João Antunes <jcfa@dei.uc.pt>
+- Nuno Antunes <nmsa@dei.uc.pt>
