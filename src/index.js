@@ -15,13 +15,6 @@ const Cookie = require("./utils/cookie");
 
 const requestListener = function (req, res) {
   let path = parse(req.url).pathname;
-  console.log("URL and PARAMS: ", {
-    url: req.url,
-    path,
-    params: req.params,
-    method: req.method,
-    cookies: Cookie.parse(req.headers.cookie),
-  });
 
   /* Handle routes */
   if (path === "/sign_up" && req.method === "GET") {
@@ -242,7 +235,6 @@ function handleHomeRoute(req, res) {
   Db.fetchUserBySessionId({
     sessionId,
     onSuccess: function onSuccess(user) {
-      console.log("Logged in user: ", user);
       res.writeHead(302, {
         Location: user ? `/users/${user.account_id}` : "/login",
       });
