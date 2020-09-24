@@ -122,7 +122,9 @@ function userPage({ user, queryParams }) {
         : ""
     }
 
-    <h1 class="h3 mb-4 font-weight-normal">Movements</h1>
+    <h1 class="h3 mb-4 font-weight-normal">Movements ${
+      queryParams.search ? `for ${queryParams.search}` : ""
+    }</h1>
 
     <form class="mb-4" action="/users/${user.id}" method="GET">
       <div class="form-row align-items-center justify-content-center">
