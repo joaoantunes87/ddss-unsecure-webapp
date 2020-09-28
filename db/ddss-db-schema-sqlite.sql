@@ -12,7 +12,9 @@ CREATE TABLE user(
 DROP TABLE IF EXISTS user_session;
 CREATE TABLE user_session(
    session_id INTEGER PRIMARY KEY,
-   account_id VARCHAR (50) NOT NULL
+   account_id VARCHAR (50) NOT NULL,
+   -- it will be used as Unix time ( seconds since the Epoch ). For more information (https://en.wikipedia.org/wiki/Unix_time)
+   timestamp_creation INTEGER NOT NULL
 );
 
 DROP TABLE IF EXISTS movement;

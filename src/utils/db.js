@@ -93,6 +93,8 @@ function deleteSessionById({ sessionId, onSuccess, onError }) {
 function loginUser({ userAuth, onSuccess, onError }) {
   const db = openDbConnection();
 
+  // FIXME: compare it with hashed_password. Need to generate hashed password first.
+
   // Get user from database with email
   // Compare passwords
   const sqlQuery = `SELECT account_id from user WHERE email="${userAuth.email}" AND hashed_password="${userAuth.password}"`;
@@ -106,8 +108,8 @@ function loginUser({ userAuth, onSuccess, onError }) {
       const accountId = rows[0].account_id;
 
       // create session
-      const insertQuery = `INSERT INTO user_session(account_id)
-      VALUES (${accountId})`;
+      const insertQuery = `INSERT INTO user_session(account_id, timestamp_creation)
+      VALUES (${accountId}, ${Date.now()})`;
 
       db.run(insertQuery, function (err) {
         if (err) {

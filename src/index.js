@@ -17,6 +17,7 @@ const requestListener = function (req, res) {
   let path = parse(req.url).pathname;
 
   /* Handle routes */
+  /* FIXME: protect need router for not authenticated or not authorized users */
   if (path === "/sign_up" && req.method === "GET") {
     handleSignUpRoute(req, res);
   } else if (path === "/login" && req.method === "GET") {
@@ -77,6 +78,7 @@ function handleLogoutRoute(req, res) {
 
 function handleAccountCreationRoute(req, res) {
   processPostData(req, res, function createUser(userData) {
+    // FIXME: create salt and hashed_password, is it needed?
     Db.createUser({
       user: userData,
       onSuccess: function onSuccess(result) {
@@ -95,6 +97,7 @@ function handleLoginValidationRoute(req, res) {
     Db.loginUser({
       userAuth: userAuthData,
       onSuccess: function onSuccess(result) {
+        /* FIXME: No expiry date defined for session cookie? Should I? */
         res.writeHead(302, {
           Location: `users/${result.accountId}`,
           "Set-Cookie": `ddss_session=${result.sessionId}`,
@@ -113,7 +116,7 @@ function handleUserPageRoute(req, res) {
   const userId = urlParsed.pathname.split("/")[2];
   const queryParams = querystring.parse(urlParsed.query);
 
-  // TODO Is it safe to use the userId from url?
+  // FIXME: Is it safe to use the userId from url? Could I exploit the user authentication using url as an access control?
   if (userId) {
     Db.fetchUserById({
       userId,
@@ -159,7 +162,7 @@ function handleMovementCreationRoute(req, res) {
   Db.fetchUserBySessionId({
     sessionId,
     onSuccess: function onSuccess(user) {
-      // TODO: Should I allow the movement if I have no user?
+      // FIXME: Should I allow the movement if I have no user logged in?
       const userId = user.account_id;
       movementData.from_account_id = userId;
 
