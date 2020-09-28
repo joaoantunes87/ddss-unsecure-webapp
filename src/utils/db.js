@@ -132,9 +132,9 @@ function userMovements({ user, queryParams, onSuccess, onError }) {
 
   const sqlQuery = `SELECT description, amount, to_account_id, from_account_id 
     from movement 
-    WHERE description LIKE "%${queryParams.search}%" AND (to_account_id=${user.id} OR from_account_id="${user.id}")`;
+    WHERE description LIKE ? AND (to_account_id=${user.id} OR from_account_id="${user.id}")`;
 
-  db.all(sqlQuery, function (err, rows) {
+  db.all(sqlQuery, [`%${queryParams.search}%`], function (err, rows) {
     if (err) {
       onError(err.message);
       return;
