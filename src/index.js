@@ -78,6 +78,7 @@ function handleLogoutRoute(req, res) {
 
 function handleAccountCreationRoute(req, res) {
   processPostData(req, res, function createUser(userData) {
+    // FIXME: Should I validate password strength?
     // FIXME: create salt and hashed_password, is it needed?
     Db.createUser({
       user: userData,
