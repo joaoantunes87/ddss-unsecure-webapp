@@ -22,7 +22,7 @@ function createUser({ user, onSuccess, onError }) {
 
   // insert one row into the user table
   db.run(
-    `INSERT INTO user(email, password, name)
+    `INSERT INTO user(email, hashed_password, name)
   VALUES ('${user.email}', '${user.password}', '${user.name}')`,
     function (err) {
       if (err) {
@@ -95,7 +95,7 @@ function loginUser({ userAuth, onSuccess, onError }) {
 
   // Get user from database with email
   // Compare passwords
-  const sqlQuery = `SELECT account_id from user WHERE email="${userAuth.email}" AND password="${userAuth.password}"`;
+  const sqlQuery = `SELECT account_id from user WHERE email="${userAuth.email}" AND hashed_password="${userAuth.password}"`;
   db.all(sqlQuery, function (err, rows) {
     if (err) {
       onError(err.message);

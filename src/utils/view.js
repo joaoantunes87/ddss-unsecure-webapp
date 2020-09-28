@@ -84,7 +84,7 @@ function loginFormPage() {
         <input id="email" name="email" type="email" class="form-control" placeholder="Your email" required>
 
         <label for="password" class="sr-only">Password</label>
-        <input id="password" name="password" class="form-control" placeholder="Create a password" required>      
+        <input id="password" type="password" name="password" class="form-control" placeholder="Create a password" required>      
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>            
         <a class="btn btn-lg btn-secondary btn-block" href="/sign_up">Register</a>            
@@ -105,7 +105,7 @@ function signUpFormPage() {
       <input id="email" name="email" type="email" class="form-control" placeholder="Your email" required>
 
       <label for="password" class="sr-only">Password</label>
-      <input id="password" name="password" class="form-control" placeholder="Create a password" required>      
+      <input id="password" name="password" type="password" class="form-control" placeholder="Create a password" required>      
 
       <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>   
       <a class="btn btn-lg btn-secondary btn-block" href="/login">Login</a>               
