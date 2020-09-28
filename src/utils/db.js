@@ -108,6 +108,7 @@ function loginUser({ userAuth, onSuccess, onError }) {
       const accountId = rows[0].account_id;
 
       // create session
+      // FIXME: this will create a sequential session id. Is it right? Think about session management best practices
       const insertQuery = `INSERT INTO user_session(account_id, timestamp_creation)
       VALUES (${accountId}, ${Date.now()})`;
 
