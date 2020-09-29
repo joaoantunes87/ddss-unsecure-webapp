@@ -77,10 +77,12 @@ As graphic user interface you could use the following [application](https://gith
 
 To learn how to use SQLite3 on your code you can use the following tutorials [here](https://www.sqlitetutorial.net/sqlite-nodejs).
 
-The inital database only contains one user for you to login:
+The inital database contains three users for you to login, with some movements already done:
 **jcfa@dei.uc.pt / 123456**
+**maria@dei.uc.pt / 123456**
+**ddss@dei.uc.pt / 123456**
 
-## Feature
+## Features
 
 This is a simple web application with following features to transfer money:
 
