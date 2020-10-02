@@ -117,6 +117,14 @@ Discover flaws and try to solve them. Some of the flaws we are looking for are o
 - Cross-site request forgery (CSRF);
 - Among others;
 
+## Articles, Tutorials, Tools
+
+Here we leave some resources you can check to help you.
+
+- [Bcrypt lib](https://www.npmjs.com/package/bcrypt);
+- [Building your own password hasher in Node.js](https://blog.logrocket.com/building-a-password-hasher-in-node-js/);
+- [Implementing two-factor authentication](https://blog.logrocket.com/implementing-two-factor-authentication-using-speakeasy/);
+
 # Authors
 
 - João Antunes <jcfa@dei.uc.pt>
