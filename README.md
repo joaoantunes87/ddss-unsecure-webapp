@@ -104,7 +104,14 @@ Having said that, you are allowed, and even encouraged, to redo all the code and
 
 Discover flaws and try to solve them. Some of the flaws we are looking for are or related to:
 
-- Authentication and Authorization;
+- Authentication and Authorization (some possible improvements):
+  - Hash password;
+  - Checked hashed password on login;
+  - Session Management: no sequential ids;
+  - Check strength of password;
+  - Expiration date for session cookie;
+  - Check authentication and authorization of route (which pages the user are allowed to use);
+  - Do not allow hacker manage url to his/her benefit;
 - SQL Injection;
 - Cross Site Scripting (XSS);
 - Cross-site request forgery (CSRF);

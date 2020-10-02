@@ -17,7 +17,7 @@ const requestListener = function (req, res) {
   let path = parse(req.url).pathname;
 
   /* Handle routes */
-  /* FIXME: protect need router for not authenticated or not authorized users */
+  /* FIXME: protect route for not authenticated or not authorized users */
   if (path === "/sign_up" && req.method === "GET") {
     handleSignUpRoute(req, res);
   } else if (path === "/login" && req.method === "GET") {
