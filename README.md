@@ -113,6 +113,7 @@ Discover flaws and try to solve them. Some of the flaws we are looking for are o
   - Check authentication and authorization of route (which pages the user are allowed to use);
   - Do not allow hacker manage url to his/her benefit;
 - SQL Injection;
+  - Go to file **src/utils/db.js** and look for sql injection vulnerabilities and try to solve them. This tutorial, [here](https://www.sqlitetutorial.net/sqlite-nodejs/query/), could be helpful.
 - Cross Site Scripting (XSS);
 - Cross-site request forgery (CSRF);
 - Among others;
