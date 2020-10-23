@@ -40,6 +40,7 @@ function createUser({ user, onSuccess, onError }) {
 function fetchUserBySessionId({ sessionId, onSuccess, onError }) {
   const db = openDbConnection();
 
+  // FIXME: Sql injection problem
   const sqlQuery = `SELECT user.account_id, user.name from user, user_session where user.account_id = user_session.account_id AND user_session.session_id = "${sessionId}"`;
   db.all(sqlQuery, function (err, rows) {
     if (err) {
@@ -56,6 +57,7 @@ function fetchUserBySessionId({ sessionId, onSuccess, onError }) {
 
 function fetchUserById({ userId, onSuccess, onError }) {
   const db = openDbConnection();
+  // FIXME: Open to sql injection problem
   const sqlQuery = `SELECT account_id, name from user where account_id =  "${userId}"`;
 
   db.all(sqlQuery, function (err, rows) {
@@ -97,6 +99,7 @@ function loginUser({ userAuth, onSuccess, onError }) {
 
   // Get user from database with email
   // Compare passwords
+  // FIXME: Sql injection problem
   const sqlQuery = `SELECT account_id from user WHERE email="${userAuth.email}" AND hashed_password="${userAuth.password}"`;
   db.all(sqlQuery, function (err, rows) {
     if (err) {
@@ -108,6 +111,7 @@ function loginUser({ userAuth, onSuccess, onError }) {
       const accountId = rows[0].account_id;
 
       // create session
+      // FIXME: this will create a sequential session id. Is it right? Think about session management best practices
       const insertQuery = `INSERT INTO user_session(account_id, timestamp_creation)
       VALUES (${accountId}, ${Date.now()})`;
 
@@ -130,6 +134,7 @@ function loginUser({ userAuth, onSuccess, onError }) {
 function userMovements({ user, queryParams, onSuccess, onError }) {
   const db = openDbConnection();
 
+  // FIXME: Sql injection problem
   const sqlQuery = `SELECT description, amount, to_account_id, from_account_id 
     from movement 
     WHERE description LIKE ? AND (to_account_id=${user.id} OR from_account_id="${user.id}")`;

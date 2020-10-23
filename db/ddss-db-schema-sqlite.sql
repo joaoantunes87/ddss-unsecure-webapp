@@ -34,7 +34,8 @@ CREATE TABLE comment(
    comment VARCHAR (512) NOT NULL
 );
 
-/* seeds */
+/* INITIAL DATA */
+
 /* Some users */
 INSERT INTO user(email, hashed_password, name)
 VALUES ('jcfa@dei.uc.pt', '123456', 'João');

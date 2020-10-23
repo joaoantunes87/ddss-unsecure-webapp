@@ -77,10 +77,12 @@ As graphic user interface you could use the following [application](https://gith
 
 To learn how to use SQLite3 on your code you can use the following tutorials [here](https://www.sqlitetutorial.net/sqlite-nodejs).
 
-The inital database only contains one user for you to login:
+The inital database contains three users for you to login, with some movements already done:
 **jcfa@dei.uc.pt / 123456**
+**maria@dei.uc.pt / 123456**
+**ddss@dei.uc.pt / 123456**
 
-## Feature
+## Features
 
 This is a simple web application with following features to transfer money:
 
@@ -102,11 +104,28 @@ Having said that, you are allowed, and even encouraged, to redo all the code and
 
 Discover flaws and try to solve them. Some of the flaws we are looking for are or related to:
 
-- Authentication and Authorization;
+- Authentication and Authorization (some possible improvements):
+  - Hash password;
+  - Checked hashed password on login;
+  - Session Management: no sequential ids;
+  - Check strength of password;
+  - Expiration date for session cookie;
+  - Check authentication and authorization of route (which pages the user are allowed to use);
+  - Do not allow hacker manage url to his/her benefit;
 - SQL Injection;
+  - Go to file **src/utils/db.js** and look for sql injection vulnerabilities and try to solve them. This tutorial, [here](https://www.sqlitetutorial.net/sqlite-nodejs/query/), could be helpful.
 - Cross Site Scripting (XSS);
 - Cross-site request forgery (CSRF);
 - Among others;
+
+## Articles, Tutorials, Tools
+
+Here we leave some resources you can check to help you.
+
+- [Bcrypt lib](https://www.npmjs.com/package/bcrypt);
+- [Building your own password hasher in Node.js](https://blog.logrocket.com/building-a-password-hasher-in-node-js/);
+- [Implementing two-factor authentication](https://blog.logrocket.com/implementing-two-factor-authentication-using-speakeasy/);
+- [Access Control with Node.js for Authorization](https://blog.logrocket.com/using-accesscontrol-for-rbac-and-abac-in-node-js/);
 
 # Authors
 

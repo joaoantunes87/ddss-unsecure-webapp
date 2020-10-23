@@ -17,7 +17,7 @@ const requestListener = function (req, res) {
   let path = parse(req.url).pathname;
 
   /* Handle routes */
-  /* FIXME: protect need router for not authenticated or not authorized users */
+  /* FIXME: protect route for not authenticated or not authorized users */
   if (path === "/sign_up" && req.method === "GET") {
     handleSignUpRoute(req, res);
   } else if (path === "/login" && req.method === "GET") {
@@ -78,6 +78,7 @@ function handleLogoutRoute(req, res) {
 
 function handleAccountCreationRoute(req, res) {
   processPostData(req, res, function createUser(userData) {
+    // FIXME: Should I validate password strength?
     // FIXME: create salt and hashed_password, is it needed?
     Db.createUser({
       user: userData,
